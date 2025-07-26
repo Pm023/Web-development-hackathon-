@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Profile - Grabit</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f2f2f2;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(46, 125, 50, 0.96);
+      padding: 12px 32px;
+      color: #fff;
+    }
+
+    
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: bold;
+    }
+
+
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #a5d6a7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  margin-right: 14px;
+}
+
+.site-name {
+  font-size: 2.1rem;
+  font-family: 'Segoe UI', Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: 800;
+  letter-spacing: 3.5px;
+  color: #1b5e20;
+  text-shadow: 2px 3px 8px #dcedc8, 0 2px 0 #fff;
+  text-transform: uppercase;
+}
+
+.nav-links {
+  display: flex;
+  gap: 18px;
+}
+
+.nav-links button {
+  background: #388e3c;
+  color: #fff;
+  border: none;
+  padding: 9px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+
+.nav-links button:hover {
+  background: #1b5e20;
+}
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .btn:hover {
+      background: #388e3c;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .product-section {
+      margin-top: 30px;
+      border-top: 1px solid #ddd;
+      padding-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+   <div class="logo-container">
+       <div class="logo" title="logo">🥕 </div>
+    <div class="site-name">grabit</div>
+    </div>
+    <div class="nav-links">
+      <button onclick="location.href='home.html'">Home</button>
+      <button onclick="location.href='my-profile.html'">My-profile</button>
+      <button onclick="location.href='create-circle.html'">Create Circle</button>
+      <button onclick="location.href='my-orders.html'">My Order</button>
+<button onclick="location.href='payment.html'">Payment</button>
+    </div>
+ 
+  </div>
+
+  <div class="container">
+    <h2>My Profile</h2>
+    <div class="form-group">
+      <label for="role">I am a:</label>
+      <select id="role" onchange="toggleRole()">
+        <option value="customer">Customer</option>
+        <option value="supplier">Supplier</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" placeholder="Enter your name">
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email ID</label>
+      <input type="text" id="email" placeholder="Enter your email">
+    </div>
+
+    <div class="form-group">
+      <label for="phone">Phone Number</label>
+      <input type="text" id="phone" placeholder="Enter your phone number">
+    </div>
+
+    <!-- Supplier Only: Product Section -->
+    <div id="supplierSection" class="hidden product-section">
+      <h3>Add / Manage Products</h3>
+
+      <div class="form-group">
+        <input type="text" id="productName" placeholder="Product Name">
+      </div>
+
+      <div class="form-group">
+        <input type="number" id="pricePerUnit" placeholder="Price per Unit">
+      </div>
+
+      <div class="form-group">
+        <input type="text" id="description" placeholder="Product Description">
+      </div>
+
+      <div class="form-group">
+        <input type="number" id="stock" placeholder="Available Stock (units)">
+      </div>
+
+      <button class="btn" onclick="addProduct()">Add Product</button>
+    </div>
+
+    <button class="btn" onclick="saveProfile()">Save Profile</button>
+  </div>
+
+  <script>
+   
+  function toggleRole() {
+    const role = document.getElementById('role').value;
+    const supplierSection = document.getElementById('supplierSection');
+    supplierSection.classList.toggle('hidden', role !== 'supplier');
+  }
+
+  function addProduct() {
+    const name = document.getElementById('productName').value.trim();
+    const price = document.getElementById('pricePerUnit').value.trim();
+    const desc = document.getElementById('description').value.trim();
+    const stock = document.getElementById('stock').value.trim();
+
+    if (!name || !price || !desc || !stock) {
+      alert("Please fill in all the product fields.");
+      return;
+    }
+
+    alert("Product added successfully!");
+    console.log("✅ Product Added:", name, price, desc, stock);
+  }
+
+  // ✅ UPDATED saveProfile FUNCTION
+  function saveProfile() {
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const role = document.getElementById('role').value;
+
+    if (!name || !email || !phone) {
+      alert("Please fill in all personal details.");
+      return;
+    }
+
+    // Optional: Save data to localStorage for use on other pages
+    localStorage.setItem("userProfile", JSON.stringify({
+      role,
+      name,
+      email,
+      phone
+    }));
+
+    alert("Profile saved successfully!");
+
+    // ✅ Redirect to new page (e.g., create-circle.html)
+    window.location.href = "create-circle.html";
+  }
+  </script>
+
+</body>
+</html>

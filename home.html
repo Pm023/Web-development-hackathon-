@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>grabit</title>
+  <style>
+    body {
+      margin: 0;
+    }
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(46,125,50,0.96);
+      padding: 12px 32px;
+      color: #fff;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+    .logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #a5d6a7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      margin-right: 14px;
+    }
+    .site-name {
+      font-size: 2.1rem;
+      font-family: 'Segoe UI', Verdana, Geneva, Tahoma, sans-serif;
+      font-weight: 800;
+      letter-spacing: 3.5px;
+      color: #1b5e20;
+      text-shadow: 2px 3px 8px #dcedc8, 0 2px 0 #fff;
+      text-transform: uppercase;
+    }
+    .nav-links {
+      display: flex;
+      gap: 18px;
+    }
+    .nav-links button {
+      background: #388e3c;
+      color: #fff;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+    .nav-links button:hover {
+      background: #1b5e20;
+    }
+    .container {
+      max-width: 420px;
+      margin: 60px auto;
+      background: rgba(255,255,255, 0.93);
+      padding: 32px 24px 24px 24px;
+      border-radius: 16px;
+      box-shadow: 0 2px 10px rgba(46,125,50,0.16);
+      text-align: center;
+    }
+    .container h2 {
+      margin-bottom: 30px;
+      color: #2e7d32;
+      font-size: 1.5rem;
+    }
+    .description {
+      margin: 18px 0 24px 0;
+      color: #444;
+    }
+    form {
+      text-align: left;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 7px;
+      color: #2e7d32;
+    }
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 9px;
+      border: 1px solid #bdbdbd;
+      border-radius: 5px;
+      margin-bottom: 12px;
+      font-size: 1rem;
+    }
+    .user-type {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+      align-items: center;
+      color: #2e7d32;
+    }
+    .login-btn {
+      width: 100%;
+      padding: 11px;
+      font-size: 1.06rem;
+      background: #388e3c;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      color: #fff;
+      transition: background 0.19s;
+    }
+    .login-btn:hover {
+      background: #1b5e20;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div class="logo-container">
+      <div class="logo" title="Logo">🥕</div>
+      <div class="site-name">grabit</div>
+    </div>
+    <div class="nav-links">
+      <button onclick="location.href='home.html'">Home</button>
+      <button onclick="location.href='my-profile.html'">My-profile</button>
+      <button onclick="location.href='create-circle.html'">Create Circle</button>
+      <button onclick="location.href='my-orders.html'">My Order</button>
+<button onclick="location.href='payment.html'">Payment</button>
+    </div>
+  </div>
+  <div class="container">
+    <h2>Login to grabit</h2>
+    <div class="description">
+      Welcome to grabit – your place for fresh vegetables, fruits, and groceries.
+    </div>
+    <form onsubmit="loginAction(event)">
+      <div class="form-group">
+        <label for="email">E-mail ID</label>
+        <input type="email" id="email" name="email" required placeholder="Enter your email id">
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required placeholder="Enter your password">
+      </div>
+      <div class="user-type">
+        <label><input type="radio" name="userType" value="customer" checked> Customer</label>
+        <label><input type="radio" name="userType" value="supplier"> Supplier</label>
+      </div>
+      <button class="login-btn" type="submit">Login</button>
+    </form>
+  </div>
+  <script>
+    function loginAction(event) {
+      event.preventDefault();
+
+      var userType = document.querySelector('input[name="userType"]:checked').value;
+      localStorage.setItem('userType', userType);
+      window.location.href = "my-profile.html";
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Grabit - Payment</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f1f8e9;
+      margin: 0;
+      padding: 0;
+    }
+
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(46,125,50,0.96);
+      padding: 12px 32px;
+      color: #fff;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #a5d6a7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      margin-right: 14px;
+    }
+
+    .site-name {
+      font-size: 2.1rem;
+      font-family: 'Segoe UI', Verdana, Geneva, Tahoma, sans-serif;
+      font-weight: 800;
+      letter-spacing: 3.5px;
+      color: #1b5e20;
+      text-shadow: 2px 3px 8px #dcedc8, 0 2px 0 #fff;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+    }
+
+    .nav-links button {
+      background: #388e3c;
+      color: #fff;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+
+    .nav-links button:hover {
+      background: #1b5e20;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2e7d32;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #c5e1a5;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #dcedc8;
+    }
+
+    .total {
+      text-align: right;
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #2e7d32;
+    }
+
+    .payment-form {
+      margin-top: 30px;
+    }
+
+    .payment-form label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    .payment-form input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+    }
+
+    .payment-form button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #388e3c;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .payment-form button:hover {
+      background-color: #2e7d32;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+    <div class="logo-container">
+      <div class="logo" title="Logo">🥕</div>
+      <div class="site-name">grabit</div>
+    </div>
+    <div class="nav-links">
+      <button onclick="location.href='home.html'">Home</button>
+      <button onclick="location.href='my-profile.html'">My-profile</button>
+      <button onclick="location.href='create-circle.html'">Create Circle</button>
+      <button onclick="location.href='my-orders.html'">My Order</button>
+      <button onclick="location.href='payment.html'">Payment</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2>Payment Summary</h2>
+
+    <div id="orderSummary"></div>
+    <div class="total" id="totalAmount">Total: ₹0.00</div>
+
+    <form class="payment-form" onsubmit="handlePayment(event)">
+      <label><input type="radio" name="paymentMode" value="auto" checked onchange="toggleManualAmount()"> Auto Total (from order or circle)</label><br>
+      <label><input type="radio" name="paymentMode" value="manual" onchange="toggleManualAmount()"> Enter Amount Manually</label>
+
+      <div id="manualAmountField" style="display: none; margin-top: 10px;">
+        <label for="manualAmount">Enter Total Amount (₹)</label>
+        <input type="number" id="manualAmount" min="1" step="0.01" placeholder="Enter total amount">
+      </div>
+
+      <h3>Enter Payment Details</h3>
+
+      <label for="cardName">Cardholder Name</label>
+      <input type="text" id="cardName" required>
+
+      <label for="cardNumber">Card Number</label>
+      <input type="text" id="cardNumber" required maxlength="16" pattern="\d{16}" placeholder="1234 5678 9012 3456">
+
+      <label for="expiry">Expiry Date</label>
+      <input type="month" id="expiry" required>
+
+      <label for="cvv">CVV</label>
+      <input type="password" id="cvv" required maxlength="4" pattern="\d{3,4}">
+
+      <button type="submit">Pay Now</button>
+    </form>
+  </div>
+
+  <script>
+    function loadOrder() {
+      const order = JSON.parse(localStorage.getItem("grabitOrder")) || [];
+      const totalLocal = localStorage.getItem("grabitTotal");
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlPrice = urlParams.get("price");
+      let displayTotal = "0.00";
+
+      if (urlPrice) {
+        displayTotal = parseFloat(urlPrice).toFixed(2);
+      } else if (totalLocal) {
+        displayTotal = parseFloat(totalLocal).toFixed(2);
+      }
+
+      document.getElementById("totalAmount").textContent = `Total: ₹${displayTotal}`;
+
+      const summary = document.getElementById("orderSummary");
+
+      if (order.length === 0) {
+        summary.innerHTML = "<p>No items to display. You may still pay manually.</p>";
+        return;
+      }
+
+      let table = `<table>
+        <thead>
+          <tr>
+            <th>Ingredient</th>
+            <th>Amount (kg)</th>
+            <th>Supplier</th>
+            <th>Total (₹)</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${order.map(item => `
+            <tr>
+              <td>${item.name}</td>
+              <td>${item.amount}</td>
+              <td>${item.supplier}</td>
+              <td>₹${item.total}</td>
+            </tr>`).join("")}
+        </tbody>
+      </table>`;
+
+      summary.innerHTML = table;
+    }
+
+    function toggleManualAmount() {
+      const isManual = document.querySelector('input[name="paymentMode"]:checked').value === "manual";
+      document.getElementById("manualAmountField").style.display = isManual ? "block" : "none";
+    }
+
+    function handlePayment(e) {
+      e.preventDefault();
+
+      const mode = document.querySelector('input[name="paymentMode"]:checked').value;
+      let totalPaid = 0;
+
+      if (mode === "manual") {
+        const manualAmount = parseFloat(document.getElementById("manualAmount").value);
+        if (isNaN(manualAmount) || manualAmount <= 0) {
+          alert("Please enter a valid amount.");
+          return;
+        }
+        totalPaid = manualAmount.toFixed(2);
+      } else {
+        const urlParams = new URLSearchParams(window.location.search);
+        const priceFromURL = urlParams.get("price");
+        totalPaid = priceFromURL ? parseFloat(priceFromURL).toFixed(2) :
+                    parseFloat(localStorage.getItem("grabitTotal") || "0").toFixed(2);
+      }
+
+      alert(`Payment of ₹${totalPaid} successful! Thank you.`);
+      localStorage.removeItem("grabitOrder");
+      localStorage.removeItem("grabitTotal");
+      window.location.href = "my-orders.html";
+    }
+
+    window.onload = loadOrder;
+  </script>
+
+</body>
+</html>
